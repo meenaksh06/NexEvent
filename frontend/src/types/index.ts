@@ -8,4 +8,5 @@ export interface Event {
   entities: { text: string; label: string }[];
   summary: string;
   location: { lat: number; lng: number };
+  urgency?: number;
 }

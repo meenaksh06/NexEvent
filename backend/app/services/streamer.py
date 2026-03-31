@@ -57,6 +57,11 @@ class EventStreamer:
             # Persist to MongoDB
             await db.db.events.insert_one(processed_event)
             
+            # MongoDB injects an '_id' of type ObjectId, which is not JSON serializable.
+            # Convert it to a string for the WebSocket broadcast.
+            if '_id' in processed_event:
+                processed_event['_id'] = str(processed_event['_id'])
+            
             # Broadcast to all connected clients
             print(f"Streamer: Broadcasting event: {processed_event['title']}")
             await manager.broadcast(processed_event)
