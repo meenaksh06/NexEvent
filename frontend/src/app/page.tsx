@@ -1,17 +1,39 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { Shield, ArrowRight, Activity, Globe, Zap, LogIn, Database, Cpu, BrainCircuit, Code2, Network, ChevronRight } from 'lucide-react';
+import { Shield, ArrowRight, Activity, Globe, Zap, LogIn, Database, Cpu, BrainCircuit, Code2, Network, ChevronRight, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+
+function CountUp({ end, suffix = "", duration = 2000 }: { end: number, suffix?: string, duration?: number }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      // easeOutExpo
+      const easing = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(easing * end));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [end, duration]);
+
+  return <span>{count.toLocaleString()}{suffix}</span>;
+}
 
 export default function LandingPage() {
   const { user, login } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [showLogin, setShowLogin] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +43,7 @@ export default function LandingPage() {
     }
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
@@ -29,7 +51,7 @@ export default function LandingPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
@@ -51,42 +73,100 @@ export default function LandingPage() {
       <motion.header 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-7xl mx-auto px-6 h-24 flex items-center justify-between z-20"
+        className="fixed top-0 left-0 right-0 w-full h-20 flex items-center justify-between z-50 px-6 lg:px-12 bg-[#030712]/80 backdrop-blur-xl border-b border-white/5"
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/20">
-            <Shield size={24} />
+          <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/20">
+            <Shield size={20} />
           </div>
-          <span className="text-2xl font-black tracking-tighter uppercase text-white">NexEvent</span>
+          <span className="text-xl font-black tracking-tighter text-white">Eventra AI</span>
         </div>
+
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-8 relative h-full">
+          <button onClick={() => router.push('/dashboard')} className="text-sm font-semibold text-gray-300 hover:text-white transition-colors h-full flex items-center">
+            AI Platform
+          </button>
+          
+          <div 
+            className="relative h-full flex items-center"
+            onMouseEnter={() => setActiveDropdown('usecases')}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            <button className="text-sm font-semibold text-gray-300 hover:text-white transition-colors flex items-center gap-1">
+              Use Cases <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'usecases' ? 'rotate-180' : ''}`} />
+            </button>
+            <AnimatePresence>
+              {activeDropdown === 'usecases' && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-20 left-1/2 -translate-x-1/2 w-56 bg-[#0f172a]/95 backdrop-blur-2xl border border-white/10 p-2 rounded-2xl shadow-2xl"
+                >
+                  {['Disaster Monitoring', 'Protest Tracking', 'Crisis Management', 'News Intelligence'].map(item => (
+                    <div key={item} className="px-4 py-2.5 hover:bg-white/10 rounded-xl cursor-pointer text-sm text-gray-200 hover:text-white transition-colors">{item}</div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div 
+            className="relative h-full flex items-center"
+            onMouseEnter={() => setActiveDropdown('products')}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            <button className="text-sm font-semibold text-gray-300 hover:text-white transition-colors flex items-center gap-1">
+              Products <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'products' ? 'rotate-180' : ''}`} />
+            </button>
+            <AnimatePresence>
+              {activeDropdown === 'products' && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-20 left-1/2 -translate-x-1/2 w-56 bg-[#0f172a]/95 backdrop-blur-2xl border border-white/10 p-2 rounded-2xl shadow-2xl"
+                >
+                  {['Live Dashboard', 'Alert System', 'AI Insights Engine', 'API Access'].map(item => (
+                    <div key={item} className="px-4 py-2.5 hover:bg-white/10 rounded-xl cursor-pointer text-sm text-gray-200 hover:text-white transition-colors">{item}</div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <button className="text-sm font-semibold text-gray-300 hover:text-white transition-colors">About</button>
+          <button className="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Contact</button>
+        </nav>
+
         <div className="flex items-center gap-4">
-          <Link href="https://github.com/meenaksh06" target="_blank" className="text-sm font-medium text-muted-foreground hover:text-white transition-colors hidden md:block">
-            GitHub
-          </Link>
           {user ? (
-            <Link href="/dashboard" className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-full font-bold transition-all flex items-center gap-2 backdrop-blur-md">
-              Dashboard <ArrowRight size={16} />
+            <Link href="/dashboard" className="px-5 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-full text-sm font-bold transition-all flex items-center gap-2 backdrop-blur-md">
+              Dashboard <ArrowRight size={14} />
             </Link>
           ) : (
             <button 
               onClick={() => setShowLogin(true)}
-              className="px-6 py-2.5 bg-white text-black hover:bg-gray-200 rounded-full font-bold shadow-lg shadow-white/10 transition-all flex items-center gap-2"
+              className="px-5 py-2 bg-white text-black hover:bg-gray-200 rounded-full text-sm font-bold shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all flex items-center gap-2"
             >
-              Sign In <LogIn size={16} />
+              Sign In <LogIn size={14} />
             </button>
           )}
         </div>
       </motion.header>
 
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center w-full max-w-7xl mx-auto px-6 z-10 pt-20 pb-32">
+      <main className="flex-1 flex flex-col items-center w-full max-w-7xl mx-auto px-6 z-10 pt-40 pb-24 min-h-screen relative">
         <motion.div 
           initial="hidden"
           animate="visible"
           variants={containerVariants}
-          className="flex flex-col items-center text-center max-w-4xl"
+          className="flex flex-col items-center text-center max-w-5xl"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-semibold mb-8 backdrop-blur-md">
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-md">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
@@ -94,30 +174,34 @@ export default function LandingPage() {
             Live Intelligence Stream Active
           </motion.div>
           
-          <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl font-black tracking-tighter leading-[1.05] mb-8 text-white">
-            Monitor the Globe. <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400">
-              Powered by AI.
+          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1] mb-8 text-white relative">
+            Real-Time AI-Powered <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500">
+              Event Intelligence
             </span>
           </motion.h1>
           
-          <motion.p variants={itemVariants} className="text-xl md:text-2xl text-gray-400 max-w-3xl mb-12 leading-relaxed font-light">
-            A production-grade intelligence platform that ingests unstructured data streams, executes distributed NLP reasoning, and plots critical incidents with zero-latency WebSockets.
+          <motion.p variants={itemVariants} className="text-xl md:text-2xl text-gray-300 max-w-3xl mb-12 leading-relaxed font-light">
+            Detect, analyze, and act on global events as they unfold.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4">
-            {user ? (
-              <Link href="/dashboard" className="px-8 py-4 bg-white text-black hover:bg-gray-200 rounded-full font-bold text-lg shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:scale-105 transition-all flex items-center gap-3">
-                Enter Platform <ArrowRight size={20} />
-              </Link>
-            ) : (
-              <button onClick={() => setShowLogin(true)} className="px-8 py-4 bg-white text-black hover:bg-gray-200 rounded-full font-bold text-lg shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:scale-105 transition-all flex items-center gap-3">
-                Initialize Dashboard <Zap size={20} />
-              </button>
-            )}
-            <Link href="#architecture" className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-full font-bold text-lg transition-all flex items-center gap-3 backdrop-blur-md">
-              View Architecture
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4 mb-24">
+            <Link href="/dashboard" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold text-lg shadow-[0_0_40px_rgba(37,99,235,0.4)] transition-all flex items-center justify-center gap-3 w-full sm:w-auto hover:scale-105">
+              Open Dashboard <ArrowRight size={20} />
             </Link>
+            <Link href="#architecture" className="px-8 py-4 bg-transparent hover:bg-white/5 border border-white/20 text-white rounded-full font-bold text-lg transition-all flex items-center justify-center gap-3 backdrop-blur-md w-full sm:w-auto">
+              Explore Platform
+            </Link>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+            className="flex flex-col items-center gap-2 text-gray-500 mt-auto"
+          >
+            <span className="text-xs uppercase tracking-widest font-semibold font-mono">Scroll to explore</span>
+            <div className="w-[1px] h-12 bg-gradient-to-b from-gray-500 to-transparent" />
           </motion.div>
         </motion.div>
 
@@ -129,72 +213,72 @@ export default function LandingPage() {
           className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 mt-24 pt-12 border-t border-white/10 w-full"
         >
           <div className="flex flex-col items-center">
-            <span className="text-4xl font-black text-white">O(1)</span>
-            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest">Routing Complexity</span>
+            <span className="text-4xl md:text-5xl font-black text-white"><CountUp end={99} suffix=".9%" /></span>
+            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest text-center">Platform Uptime</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-4xl font-black text-white">&lt;50ms</span>
-            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest">Socket Latency</span>
+            <span className="text-4xl md:text-5xl font-black text-white">&lt;<CountUp end={50} suffix="ms" /></span>
+            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest text-center">Socket Latency</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-4xl font-black text-white">spaCy</span>
-            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest">NER Pipeline</span>
+            <span className="text-4xl md:text-5xl font-black text-white"><CountUp end={10} suffix="K+" /></span>
+            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest text-center">Data Sources</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-4xl font-black text-white">Async</span>
-            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest">MotorDB I/O</span>
+            <span className="text-4xl md:text-5xl font-black text-white"><CountUp end={150} suffix="M+" /></span>
+            <span className="text-sm text-gray-500 font-medium mt-2 uppercase tracking-widest text-center">Events Processed</span>
           </div>
         </motion.div>
 
-        {/* Bento Box Architecture Showcase */}
+        {/* Dataminr Product Solutions */}
         <div id="architecture" className="w-full mt-32 pt-16">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Engineering Excellence</h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">Designed for scale. Every component is highly optimized for throughput, memory efficiency, and developer ergonomics.</p>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4">The Leading AI Platform</h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">From AI to Impact. Dataminr delivers instant clarity when it matters most, across four critical domains.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
             
-            {/* Bento 1: Backend */}
-            <div className="md:col-span-2 md:row-span-1 bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:bg-white/[0.05] transition-colors relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[80px] group-hover:bg-indigo-500/20 transition-colors" />
-              <Network className="text-indigo-400 mb-6" size={40} />
-              <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-3">
-                Distributed FastAPI Engine
+            {/* Cyber Defense */}
+            <div className="bg-white/[0.02] border border-white/10 rounded-[2rem] p-10 hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+              <Network className="text-blue-500 mb-6" size={48} strokeWidth={1.5} />
+              <h3 className="text-3xl font-bold text-white mb-4 flex items-center gap-3">
+                Dataminr for Cyber Defense
               </h3>
-              <p className="text-gray-400 leading-relaxed max-w-md">
-                A highly concurrent backend leveraging Python's `asyncio`. It manages persistent WebSocket connections across hundreds of simulated clients while simultaneously performing heavily non-blocking I/O against MongoDB using the async Motor driver.
+              <p className="text-gray-400 leading-relaxed text-lg mb-8">
+                Reduce cyber exposure with AI-driven detection across digital ecosystems. Gain real-time visibility of the full lifecycle of vulnerabilities affecting your tech stack and strengthen your cybersecurity posture with comprehensive threat intelligence.
               </p>
+              <div className="text-blue-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-wider text-sm">Learn More <ArrowRight size={16} /></div>
             </div>
 
-            {/* Bento 2: NLP */}
-            <div className="md:col-span-1 md:row-span-1 bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:bg-white/[0.05] transition-colors relative overflow-hidden group">
-              <div className="absolute bottom-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-[60px] group-hover:bg-purple-500/20 transition-colors" />
-              <BrainCircuit className="text-purple-400 mb-6" size={40} />
-              <h3 className="text-2xl font-bold text-white mb-3">AI & NLP Pipeline</h3>
-              <p className="text-gray-400 leading-relaxed text-sm">
-                Real-time Named Entity Recognition (NER) via spaCy, combined with VADER sentiment scoring. Events are dynamically assigned a 0-100 `Urgency Score` based on compound polarity vectors.
+            {/* Corporate Security */}
+            <div className="bg-white/[0.02] border border-white/10 rounded-[2rem] p-10 hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+              <Shield className="text-indigo-400 mb-6" size={48} strokeWidth={1.5} />
+              <h3 className="text-3xl font-bold text-white mb-4">Dataminr for Corporate Security</h3>
+              <p className="text-gray-400 leading-relaxed text-lg mb-8">
+                Ensure the safety of your employees, executives, customers, and contractors against external risks and threats, wherever they are. Maintain awareness of events that could jeopardize the safety of diplomats and embassies.
               </p>
+              <div className="text-indigo-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-wider text-sm">Learn More <ArrowRight size={16} /></div>
             </div>
 
-            {/* Bento 3: Frontend */}
-            <div className="md:col-span-1 md:row-span-1 bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:bg-white/[0.05] transition-colors relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[60px] group-hover:bg-blue-500/20 transition-colors" />
-              <Code2 className="text-blue-400 mb-6" size={40} />
-              <h3 className="text-2xl font-bold text-white mb-3">Next.js 14</h3>
-              <p className="text-gray-400 leading-relaxed text-sm">
-                Built on the App Router with React Server Components. Features global contexts for socket state preservation across routes, encapsulated layouts, and extreme Tailwind optimizations.
+            {/* First Alert */}
+            <div className="bg-white/[0.02] border border-white/10 rounded-[2rem] p-10 hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+              <Activity className="text-red-500 mb-6" size={48} strokeWidth={1.5} />
+              <h3 className="text-3xl font-bold text-white mb-4">First Alert</h3>
+              <p className="text-gray-400 leading-relaxed text-lg mb-8">
+                Respond as early as possible to any natural or man-made emergency, crisis, incident, disaster, or attack. Enable the quickest possible response to public safety incidents and emergencies for first responders globally.
               </p>
+              <div className="text-red-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-wider text-sm">Learn More <ArrowRight size={16} /></div>
             </div>
 
-            {/* Bento 4: Map */}
-            <div className="md:col-span-2 md:row-span-1 bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:bg-white/[0.05] transition-colors relative overflow-hidden group">
-               <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] group-hover:bg-emerald-500/20 transition-colors" />
-              <Globe className="text-emerald-400 mb-6" size={40} />
-              <h3 className="text-2xl font-bold text-white mb-3">WebGL Geospatial Parsing</h3>
-              <p className="text-gray-400 leading-relaxed max-w-md">
-                Bypassed standard expensive proprietary map solutions by architecting a custom MapLibre GL JS integration using Carto's open-source vector tiles. Performs GPU-accelerated rendering capable of mapping thousands of active incident nodes without dropping frames.
+            {/* News */}
+            <div className="bg-white/[0.02] border border-white/10 rounded-[2rem] p-10 hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
+              <Globe className="text-emerald-400 mb-6" size={48} strokeWidth={1.5} />
+              <h3 className="text-3xl font-bold text-white mb-4">Dataminr for News</h3>
+              <p className="text-gray-400 leading-relaxed text-lg mb-8">
+                Power your breaking news desk with real-time event intelligence. Identify risks and events that no other platform can detect—across both the physical and digital worlds—long before they trend on social media.
               </p>
+              <div className="text-emerald-400 font-bold flex items-center gap-2 group-hover:gap-4 transition-all uppercase tracking-wider text-sm">Learn More <ArrowRight size={16} /></div>
             </div>
 
           </div>
@@ -234,8 +318,8 @@ export default function LandingPage() {
 
               <div className="flex gap-3 mt-4">
                 <button type="button" onClick={() => setShowLogin(false)} className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-bold transition-colors">Cancel</button>
-                <button type="submit" className="flex-[2] py-3.5 bg-white text-black hover:bg-gray-200 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2">
-                  Initialize <ChevronRight size={18} />
+                <button type="submit" className="flex-[2] py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center justify-center gap-2">
+                  Launch Platform <ChevronRight size={18} />
                 </button>
               </div>
             </form>

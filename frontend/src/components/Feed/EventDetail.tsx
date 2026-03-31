@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Event } from '@/types';
-import { X, MapPin, Tag, Brain, TrendingDown, TrendingUp, Minus } from 'lucide-react';
+import { X, MapPin, Tag, Brain, TrendingDown, TrendingUp, Minus, AlertTriangle, Flame } from 'lucide-react';
 import { formatEventDate } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,9 +24,9 @@ export default function EventDetail({ event, onClose }: EventDetailProps) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed top-0 right-0 w-full md:w-[400px] h-full bg-card border-l border-border z-50 shadow-2xl overflow-y-auto"
+        className="fixed top-0 right-0 w-full md:w-[450px] h-full bg-[#0f172a]/95 backdrop-blur-3xl border-l border-white/10 z-50 shadow-2xl overflow-y-auto"
       >
-        <div className="p-6 relative">
+        <div className="p-6 md:p-8 relative">
           <button 
             onClick={onClose}
             className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
@@ -36,13 +36,26 @@ export default function EventDetail({ event, onClose }: EventDetailProps) {
 
           <div className="mt-8 space-y-6">
             <div>
-              <span className="text-xs uppercase tracking-widest text-primary font-bold">
-                {event.category}
-              </span>
-              <h2 className="text-2xl font-bold mt-2 leading-tight">
+              <div className="flex items-start justify-between mb-3">
+                <span className="text-xs uppercase tracking-widest text-blue-400 font-bold px-2 py-1 bg-blue-500/10 rounded-md border border-blue-500/20">
+                  {event.category}
+                </span>
+                
+                {/* Risk Score Badge */}
+                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border ${
+                  (event.urgency || 0) >= 60 ? 'bg-red-500/10 border-red-500/30 text-red-500' :
+                  (event.urgency || 0) >= 40 ? 'bg-orange-500/10 border-orange-500/30 text-orange-400' :
+                  'bg-blue-500/10 border-blue-500/30 text-blue-400'
+                }`}>
+                  {(event.urgency || 0) >= 60 ? <Flame size={14} /> : <AlertTriangle size={14} />}
+                  <span className="text-xs font-bold uppercase tracking-wider">Risk Score: {event.urgency || 0}</span>
+                </div>
+              </div>
+
+              <h2 className="text-2xl font-black mt-2 leading-tight text-white tracking-tight">
                 {event.title}
               </h2>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="text-sm text-gray-400 mt-3 font-mono">
                 {formatEventDate(event.date)}
               </p>
             </div>
@@ -77,15 +90,15 @@ export default function EventDetail({ event, onClose }: EventDetailProps) {
             </section>
 
             <section>
-              <h3 className="text-sm font-bold flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
-                <Tag size={16} className="text-primary" />
+              <h3 className="text-sm font-bold flex items-center gap-2 text-gray-400 uppercase tracking-widest">
+                <Tag size={16} className="text-blue-400" />
                 Entities Detected
               </h3>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {event.entities.map((entity, i) => (
                   <span 
                     key={i} 
-                    className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10"
+                    className="text-xs px-3 py-1.5 rounded-md bg-white/5 border border-white/10 text-blue-300 font-mono hover:bg-white/10 transition-colors"
                     title={entity.label}
                   >
                     {entity.text}

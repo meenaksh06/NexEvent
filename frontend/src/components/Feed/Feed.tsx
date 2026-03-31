@@ -24,14 +24,24 @@ export default function Feed({ events, onSelectEvent, selectedEvent }: FeedProps
         </span>
       </div>
       
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
-        {events.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-muted-foreground opacity-50 italic">
-            Waiting for incoming data...
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2 relative">
+        {events.length === 0 ? (
+          <div className="w-full h-full p-2 space-y-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="p-4 rounded-lg border border-white/5 bg-white/[0.02] animate-pulse flex flex-col gap-3">
+                <div className="flex justify-between w-full">
+                  <div className="w-16 h-4 bg-white/10 rounded-full" />
+                  <div className="w-12 h-3 bg-white/5 rounded-full" />
+                </div>
+                <div className="w-3/4 h-4 bg-white/10 rounded-md" />
+                <div className="w-1/2 h-4 bg-white/5 rounded-md" />
+                <div className="w-20 h-3 bg-white/5 rounded-full mt-2" />
+              </div>
+            ))}
           </div>
-        )}
-        
-        {events.map((event, index) => (
+        ) : (
+          <>
+            {events.map((event, index) => (
           <div
             key={`${event.title}-${index}`}
             onClick={() => onSelectEvent(event)}
@@ -59,7 +69,9 @@ export default function Feed({ events, onSelectEvent, selectedEvent }: FeedProps
                 <ChevronRight size={14} className="ml-1 transition-transform group-hover:translate-x-1" />
             </div>
           </div>
-        ))}
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
