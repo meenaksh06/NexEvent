@@ -35,7 +35,7 @@ function DashboardHeader({ onMenuClick }: { onMenuClick: () => void }) {
             <Shield size={18} />
           </div>
           <span className="text-xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400">
-            Eventra AI
+            NexEvent
           </span>
         </Link>
         
@@ -53,32 +53,32 @@ function DashboardHeader({ onMenuClick }: { onMenuClick: () => void }) {
           <select 
             value={filterCategory} 
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="bg-secondary/50 border border-border rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none max-w-[130px] shadow-sm transition-all"
+            className="bg-[#0f172a]/90 text-white border border-white/10 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none max-w-[140px] shadow-sm transition-all cursor-pointer font-medium"
           >
-            <option value="">All Categories</option>
-            {categories.map(c => <option key={c} value={c}>{c}</option>)}
+            <option value="" className="bg-[#0f172a] text-white">All Categories</option>
+            {categories.map(c => <option key={c} value={c} className="bg-[#0f172a] text-white">{c}</option>)}
           </select>
           <select 
             value={filterSentiment} 
             onChange={(e) => setFilterSentiment(e.target.value)}
-            className="bg-secondary/50 border border-border rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none shadow-sm transition-all"
+            className="bg-[#0f172a]/90 text-white border border-white/10 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none shadow-sm transition-all cursor-pointer font-medium"
           >
-            <option value="">All Sentiments</option>
-            <option value="positive">Positive</option>
-            <option value="neutral">Neutral</option>
-            <option value="negative">Negative</option>
+            <option value="" className="bg-[#0f172a] text-white">All Sentiments</option>
+            <option value="positive" className="bg-[#0f172a] text-white">Positive</option>
+            <option value="neutral" className="bg-[#0f172a] text-white">Neutral</option>
+            <option value="negative" className="bg-[#0f172a] text-white">Negative</option>
           </select>
         </div>
 
         {/* Search Bar */}
         <div className="relative group w-full max-w-[200px] md:max-w-xs transition-all">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-blue-400 transition-colors" size={16} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors" size={16} />
           <input 
             type="text" 
             placeholder="Search events..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-black/40 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-mono shadow-inner text-white placeholder-gray-500"
+            className="bg-[#0f172a]/90 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-mono shadow-inner text-white placeholder-gray-400"
           />
         </div>
         
@@ -149,7 +149,7 @@ function DashboardSidebar({ isMobileOpen, closeMobile }: { isMobileOpen: boolean
           <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg text-white shadow-lg">
             <Shield size={20} />
           </div>
-          <span className="text-xl font-black tracking-tighter uppercase text-white">Eventra AI</span>
+          <span className="text-xl font-black tracking-tighter uppercase text-white">NexEvent</span>
         </Link>
         <button onClick={closeMobile} className="absolute top-6 right-4 md:hidden text-gray-400 hover:text-white"><X size={24} /></button>
 

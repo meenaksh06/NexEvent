@@ -79,7 +79,7 @@ export default function LandingPage() {
           <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/20">
             <Shield size={20} />
           </div>
-          <span className="text-xl font-black tracking-tighter text-white">Eventra AI</span>
+          <span className="text-xl font-black tracking-tighter text-white">NexEvent</span>
         </div>
 
         {/* Desktop Nav */}
