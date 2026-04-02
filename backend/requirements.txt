@@ -16,3 +16,4 @@ torch
 transformers
 numpy
 tqdm
+gunicorn
