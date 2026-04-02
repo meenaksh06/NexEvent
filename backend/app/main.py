@@ -1,13 +1,13 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.services.websocket import manager
-from backend.app.core.config import settings
+from app.services.websocket import manager
+from app.core.config import settings
 import asyncio
 
-from backend.app.services.streamer import streamer
+from app.services.streamer import streamer
 from contextlib import asynccontextmanager
 
-from backend.app.db.mongodb import db
+from app.db.mongodb import db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

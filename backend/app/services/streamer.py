@@ -2,10 +2,10 @@ import pandas as pd
 import asyncio
 import json
 from datetime import datetime
-from backend.app.services.websocket import manager
-from backend.app.core.config import settings
-from backend.app.services.processor import process_event
-from backend.app.db.mongodb import db
+from app.services.websocket import manager
+from app.core.config import settings
+from app.services.processor import process_event
+from app.db.mongodb import db
 import random
 
 class EventStreamer:
