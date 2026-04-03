@@ -20,7 +20,8 @@ interface EventContextType {
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export function EventProvider({ children }: { children: ReactNode }) {
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:10000/ws/events';
+  const baseUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:10000';
+  const wsUrl = baseUrl.endsWith('/ws/events') ? baseUrl : `${baseUrl.replace(/\/$/, '')}/ws/events`;
   const { events, isConnected } = useSocket(wsUrl);
   
   const [searchQuery, setSearchQuery] = useState('');
