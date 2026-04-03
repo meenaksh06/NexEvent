@@ -20,7 +20,8 @@ interface EventContextType {
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export function EventProvider({ children }: { children: ReactNode }) {
-  const { events, isConnected } = useSocket('ws://127.0.0.1:10000/ws/events');
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:10000/ws/events';
+  const { events, isConnected } = useSocket(wsUrl);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('');

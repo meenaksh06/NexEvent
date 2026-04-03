@@ -7,13 +7,7 @@ vaderSentiment
 spacy
 websockets
 pandas
-scikit-learn
-bertopic
 python-multipart
 python-dotenv
 aiofiles
-torch
-transformers
-numpy
-tqdm
 gunicorn
