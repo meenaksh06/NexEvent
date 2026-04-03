@@ -42,11 +42,20 @@ async def test():
 
 @app.websocket("/ws/events")
 async def websocket_endpoint(websocket: WebSocket):
-    print("WebSocket: New connection attempt...")
-    await manager.connect(websocket)
-    print(f"WebSocket: Connection established. Total: {len(manager.active_connections)}")
     try:
-        while True:
-            await websocket.receive_text()
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        # Explicit handshake with no origin restriction
+        await websocket.accept()
+        print(f"WS: Accepted connection from {websocket.client}")
+        
+        await manager.connect(websocket)
+        print(f"WS: Registered connection. Total active: {len(manager.active_connections)}")
+        
+        try:
+            while True:
+                # Keep connection alive and wait for client heartbeat or disconnection
+                data = await websocket.receive_text()
+        except WebSocketDisconnect:
+            manager.disconnect(websocket)
+            print(f"WS: Connection closed by client. Total active: {len(manager.active_connections)}")
+    except Exception as e:
+        print(f"WS Error during handshake or connection: {e}")
