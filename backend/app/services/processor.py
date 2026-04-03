@@ -3,13 +3,13 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import random
 import asyncio
 
-# Load spaCy model
+# Load spaCy model (installed via requirements.txt)
 try:
     nlp = spacy.load("en_core_web_sm")
-except:
-    import os
-    os.system("python -m spacy download en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    # Fallback to a minimal functional state if the model somehow isn't loaded
+    print("Warning: en_core_web_sm not found. Falling back to blank model.")
+    nlp = spacy.blank("en")
 
 analyzer = SentimentIntensityAnalyzer()
 
