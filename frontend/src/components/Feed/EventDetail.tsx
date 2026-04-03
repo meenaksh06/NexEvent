@@ -85,7 +85,7 @@ export default function EventDetail({ event, onClose }: EventDetailProps) {
                 AI Analysis
               </h3>
               <div className="mt-3 p-4 rounded-xl bg-primary/5 border border-primary/10 italic text-sm leading-relaxed">
-                "{event.summary}"
+                &quot;{event.summary}&quot;
               </div>
             </section>
 
