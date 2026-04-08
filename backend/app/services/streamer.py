@@ -72,4 +72,10 @@ class EventStreamer:
     def stop(self):
         self.running = False
 
-streamer = EventStreamer("data/processed/featured_news.csv")
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+DATA_PATH = BASE_DIR / "data" / "processed" / "featured_news.csv"
+
+streamer = EventStreamer(str(DATA_PATH))
+
