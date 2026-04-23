@@ -50,10 +50,10 @@ Built for scale and real-time performance, NexEvent utilizes a decoupled client-
 ### Backend Deployment
 ```bash
 cd backend
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python -m spacy download en_core_web_sm
+python3 -m spacy download en_core_web_sm
 
 # Configure environment variables (.env)
 # Ensure MONGODB_URI is set

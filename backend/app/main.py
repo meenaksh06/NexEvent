@@ -59,3 +59,6 @@ async def websocket_endpoint(websocket: WebSocket):
             print(f"WS: Connection closed by client. Total active: {len(manager.active_connections)}")
     except Exception as e:
         print(f"WS Error during handshake or connection: {e}")
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=10000)
