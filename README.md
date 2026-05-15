@@ -80,4 +80,4 @@ The application is container-ready and structurally designed to be deployed acro
 - **Backend**: Recommend Render, AWS ECS, or Google Cloud Run for containerized deployment.
 - **Database**: MongoDB Atlas.
 
-Ensure proper CORS configuration and secure connection protocols (WSS/HTTPS) .
+Ensure proper CORS configuration and secure connection protocols (WSS/HTTPS) for production environment.
